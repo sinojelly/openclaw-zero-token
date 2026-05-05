@@ -58,7 +58,7 @@ detect_chrome() {
         return
       fi
       # 也尝试命令方式
-      command -v google-chrome >/dev/null 2>&1 && echo "google-chrome" && return
+      command -v google-chrome --no-sandbox  >/dev/null 2>&1 && echo "google-chrome" && return
       ;;
     win)  #  纯 Windows (Git Bash) 单独走 Windows 路径
       for p in "${win_paths[@]}"; do
@@ -71,7 +71,7 @@ detect_chrome() {
       done
       # 命令回退
       for cmd in google-chrome google-chrome-stable chromium chromium-browser; do
-        command -v "$cmd" >/dev/null 2>&1 && echo "$cmd" && return
+        command -v "$cmd" --no-sandbox  >/dev/null 2>&1 && echo "$cmd" && return
       done
       ;;
   esac
@@ -141,6 +141,9 @@ echo ""
   --user-data-dir="$USER_DATA_DIR" \
   --no-first-run \
   --no-default-browser-check \
+  --no-sandbox \
+  --disable-setuid-sandbox \
+  --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" \
   --disable-background-networking \
   --disable-sync \
   --disable-translate \
@@ -190,7 +193,7 @@ if curl -s http://127.0.0.1:9222/json/version > /dev/null 2>&1; then
     "https://manus.im/app"
   )
   for url in "${WEB_URLS[@]}"; do
-    "$CHROME_PATH" --remote-debugging-port=9222 --user-data-dir="$USER_DATA_DIR" "$url" > /dev/null 2>&1 &
+    "$CHROME_PATH" --remote-debugging-port=9222 --user-data-dir="$USER_DATA_DIR" --no-sandbox --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"  "$url" > /dev/null 2>&1 &
     sleep 0.5
   done
 
